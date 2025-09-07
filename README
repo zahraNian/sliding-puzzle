@@ -1,0 +1,3 @@
+docker command to serve
+    docker build -t sliding-puzzle .
+    docker run -p 8080:8080 sliding-puzzle
