@@ -18,7 +18,7 @@ class TailPuzzle {
     Object.assign(this.puzzle.style, {
       position: "relative",
       overflow: "auto",
-      maxWidth: "100vw",
+      maxWidth: "90vw",
       minHeight: "max-content",
       display: "flex",
       alignItems: "center",
@@ -68,8 +68,8 @@ class TailPuzzle {
   }
 
   applyTileSize() {
-    this.puzzle.style.width = `${this.tileSize * this.cols * 110 / 100}px`;
-    this.puzzle.style.height = `${this.tileSize * this.rows * 110 / 100}px`;
+    this.puzzle.style.width = `${this.tileSize * this.cols + 10}px`;
+    this.puzzle.style.height = `${this.tileSize * this.rows + 10}px`;
 
     for (let i = 0; i < this.rows; i++) {
       for (let j = 0; j < this.cols; j++) {
