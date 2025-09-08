@@ -38,6 +38,25 @@ button:hover {
 	background: oklch(27.8% 0.033 256.848);
 }
 
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
 #boards-container {
 	display: flex;
 	flex-direction: row;
@@ -55,7 +74,7 @@ button:hover {
 .puzzle-container {
 	display: flex;
 	flex-direction: column;
-	row-gap: 15px;
+	row-gap: 4px;
 }
 
 #boards-container span {
