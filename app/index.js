@@ -1,6 +1,6 @@
 const tailSizeConfig = { 1: 35, 2: 40, 3: 50, 4: 65, 5: 80, 6: 90, 7: 95, 8: 100, 9: 105, 10: 115 };
 
-class TailPuzzle {
+class SlidingPuzzle {
   constructor(containerId, boardId, rows = 4, cols = 4, tileSize = tailSizeConfig[5]) {
     this.state = 1;
     this.rows = rows;
@@ -213,15 +213,11 @@ class TailPuzzle {
   }
 
   difficultyLevels(row, col) {
-    const itemsCount = row * col;
-    const ranges = [
-      { max: 16, moves: 100 },
-      { max: 49, moves: 500 },
-      { max: 124, moves: 900 },
-      { max: Infinity, moves: 1200 }
-    ];
-    const selectedRange = ranges.find(r => itemsCount <= r.max);
-    return selectedRange.moves;
+    const items = row * col;
+    if (items <= 16) return 100;
+    if (items <= 49) return 500;
+    if (items <= 124) return 900;
+    return 1200;
   }
 }
 
@@ -232,7 +228,7 @@ const createPuzzle = (rows, cols) => {
   const container = document.getElementById('boards-container');
   container.innerHTML = '';
 
-  currentPuzzle = new TailPuzzle(
+  currentPuzzle = new SlidingPuzzle(
     'boards-container',
     existingBoardsNumber,
     rows,
@@ -250,30 +246,23 @@ const rowsValue = document.getElementById('rowsValue');
 const colsValue = document.getElementById('colsValue');
 const tailsSizeValue = document.getElementById('tailsSizeValue');
 
-rowsSlider.addEventListener('input', () => {
-  rowsValue.innerText = rowsSlider.value;
-  createPuzzle(parseInt(rowsSlider.value), parseInt(colsSlider.value));
-});
-
-colsSlider.addEventListener('input', () => {
-  colsValue.innerText = colsSlider.value;
-  createPuzzle(parseInt(rowsSlider.value), parseInt(colsSlider.value));
-});
-
-tailsSizeSlider.addEventListener('input', () => {
-  console.log(tailsSizeValue.innerText, tailsSizeSlider.value);
-
-  tailsSizeValue.innerText = tailsSizeSlider.value;
-  if (currentPuzzle) {
-    currentPuzzle.updateTileSize(parseInt(tailsSizeSlider.value));
-  }
+function bindSlider(slider, valueEl, callback) {
+  slider.addEventListener('input', () => {
+    valueEl.innerText = slider.value;
+    callback(parseInt(slider.value));
+  });
+}
+bindSlider(rowsSlider, rowsValue, () => createPuzzle(+rowsSlider.value, +colsSlider.value));
+bindSlider(colsSlider, colsValue, () => createPuzzle(+rowsSlider.value, +colsSlider.value));
+bindSlider(tailsSizeSlider, tailsSizeValue, () => {
+  if (currentPuzzle) currentPuzzle.updateTileSize(+tailsSizeSlider.value);
 });
 
 // Add initial puzzle
 createPuzzle(parseInt(rowsSlider.value), parseInt(colsSlider.value));
 
 document.getElementById('add-board').addEventListener('click', () => {
-  new TailPuzzle(
+  new SlidingPuzzle(
     'boards-container',
     existingBoardsNumber,
     parseInt(rowsSlider.value),
