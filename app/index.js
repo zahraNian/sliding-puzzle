@@ -1,9 +1,11 @@
+const tailSizeConfig = { 1: 35, 2: 40, 3: 50, 4: 65, 5: 80, 6: 90, 7: 95, 8: 100, 9: 105, 10: 115 };
+
 class TailPuzzle {
-  constructor(containerId, boardId, rows = 4, cols = 4, tileSize = 80) {
+  constructor(containerId, boardId, rows = 4, cols = 4, tileSize = tailSizeConfig[5]) {
     this.state = 1;
     this.rows = rows;
     this.cols = cols;
-    this.tileSize = tileSize;
+    this.tileSize = tailSizeConfig[tileSize];
 
     this.container = document.getElementById(containerId);
 
@@ -13,10 +15,15 @@ class TailPuzzle {
 
     this.puzzle = document.createElement('div');
     this.puzzle.id = 'board' + boardId;
-    this.puzzle.style.width = `${this.tileSize * this.cols}px`;
-    this.puzzle.style.height = `${this.tileSize * this.rows}px`;
-    this.puzzle.style.position = 'relative';
-
+    Object.assign(this.puzzle.style, {
+      position: "relative",
+      overflow: "auto",
+      maxWidth: "100vw",
+      minHeight: "max-content",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center"
+    });
     this.container.appendChild(this.puzzleContainer);
     this.puzzleContainer.appendChild(this.puzzle);
 
@@ -25,7 +32,7 @@ class TailPuzzle {
 
     this.createControls();
     this.solve();
-    this.scramble(100, true); // toDo: تغییر به تعداد دلخواه
+    this.scramble(100, true);
 
     this.puzzle.addEventListener('click', (e) => {
       if (this.state === 1) {
@@ -44,11 +51,6 @@ class TailPuzzle {
       for (let j = 0; j < this.cols; j++) {
         const cell = document.createElement('span');
         cell.id = `cell-${this.puzzle.id}-${i}-${j}`;
-        cell.style.left = (j * this.tileSize + j) + 'px';
-        cell.style.top = (i * this.tileSize + i) + 'px';
-        cell.style.fontSize = `${(6 / 10) * this.tileSize}px`;
-        cell.style.width = this.tileSize - 5 + 'px';
-        cell.style.height = this.tileSize - 5 + 'px';
 
         if (n <= this.rows * this.cols - 1) {
           cell.classList.add('number', 'tail');
@@ -61,6 +63,31 @@ class TailPuzzle {
         this.puzzle.appendChild(cell);
       }
     }
+
+    this.applyTileSize();
+  }
+
+  applyTileSize() {
+    this.puzzle.style.width = `${this.tileSize * this.cols * 110 / 100}px`;
+    this.puzzle.style.height = `${this.tileSize * this.rows * 110 / 100}px`;
+
+    for (let i = 0; i < this.rows; i++) {
+      for (let j = 0; j < this.cols; j++) {
+        const cell = this.getCell(i, j);
+        if (!cell) continue;
+
+        cell.style.left = (j * this.tileSize + j) + 'px';
+        cell.style.top = (i * this.tileSize + i) + 'px';
+        cell.style.fontSize = `${(3.8 / 10) * this.tileSize}px`;
+        cell.style.width = this.tileSize - 5 + 'px';
+        cell.style.height = this.tileSize - 5 + 'px';
+      }
+    }
+  }
+
+  updateTileSize(newSize) {
+    this.tileSize = tailSizeConfig[newSize];
+    this.applyTileSize();
   }
 
   getCell(row, col) {
@@ -202,35 +229,56 @@ let existingBoardsNumber = 1;
 let currentPuzzle = null;
 
 const createPuzzle = (rows, cols) => {
-    const container = document.getElementById('boards-container');
-    container.innerHTML = '';
+  const container = document.getElementById('boards-container');
+  container.innerHTML = '';
 
-    currentPuzzle = new TailPuzzle('boards-container', existingBoardsNumber, rows, cols, 80);
-    existingBoardsNumber++;
+  currentPuzzle = new TailPuzzle(
+    'boards-container',
+    existingBoardsNumber,
+    rows,
+    cols,
+    parseInt(tailsSizeSlider.value)
+  );
+  existingBoardsNumber++;
 };
 
 // Sliders
 const rowsSlider = document.getElementById('rowsSlider');
 const colsSlider = document.getElementById('colsSlider');
+const tailsSizeSlider = document.getElementById('tailsSizeSlider');
 const rowsValue = document.getElementById('rowsValue');
 const colsValue = document.getElementById('colsValue');
+const tailsSizeValue = document.getElementById('tailsSizeValue');
 
 rowsSlider.addEventListener('input', () => {
-    rowsValue.innerText = rowsSlider.value;
-    createPuzzle(parseInt(rowsSlider.value), parseInt(colsSlider.value));
+  rowsValue.innerText = rowsSlider.value;
+  createPuzzle(parseInt(rowsSlider.value), parseInt(colsSlider.value));
 });
 
 colsSlider.addEventListener('input', () => {
-    colsValue.innerText = colsSlider.value;
-    createPuzzle(parseInt(rowsSlider.value), parseInt(colsSlider.value));
+  colsValue.innerText = colsSlider.value;
+  createPuzzle(parseInt(rowsSlider.value), parseInt(colsSlider.value));
+});
+
+tailsSizeSlider.addEventListener('input', () => {
+  console.log(tailsSizeValue.innerText, tailsSizeSlider.value);
+
+  tailsSizeValue.innerText = tailsSizeSlider.value;
+  if (currentPuzzle) {
+    currentPuzzle.updateTileSize(parseInt(tailsSizeSlider.value));
+  }
 });
 
 // Add initial puzzle
 createPuzzle(parseInt(rowsSlider.value), parseInt(colsSlider.value));
 
 document.getElementById('add-board').addEventListener('click', () => {
-    new TailPuzzle('boards-container', existingBoardsNumber, parseInt(rowsSlider.value), parseInt(colsSlider.value), 80);
-    existingBoardsNumber++;
+  new TailPuzzle(
+    'boards-container',
+    existingBoardsNumber,
+    parseInt(rowsSlider.value),
+    parseInt(colsSlider.value),
+    parseInt(tailsSizeSlider.value)
+  );
+  existingBoardsNumber++;
 });
-
-document.getElementById('add-board').addEventListener('click', addBoard);
