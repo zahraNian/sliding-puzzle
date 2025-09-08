@@ -10,25 +10,31 @@
 	<div class="main-header">
 		<h1>Fun Sliding Puzzle :)</h1>
 	</div>
-	<div class="align-center mt-10">
-		<button id="add-board"> + Add Another Puzzle</button>
-	</div>
-	<div class="center mt-5">
-		<div id="controls-sliders" class="slider-container">
-			<div class="controls-title">Configs</div>
-	
-			  <label for="rowsSlider">Rows: <span id="rowsValue">4</span></label>
-			  <input type="range" id="rowsSlider" min="2" max="30" value="4">
-	
-			  <label for="colsSlider">Cols: <span id="colsValue">4</span></label>
-			  <input type="range" id="colsSlider" min="2" max="30" value="4">
-
-			  <label for="tailsSizeSlider" class="mt-5">Tails Size: <span id="tailsSizeValue">5</span></label>
-			  <input type="range" id="tailsSizeSlider" min="1" max="10" value="5">
-	
+	<div class="page-content">
+		<div class="sidebar">
+			<div class="align-center mt-10">
+				<button class="primary-btn lg-btn" id="add-board"> + Add Another Puzzle</button>
+			</div>
+			<div class="center mt-5">
+				<div id="controls-sliders" class="slider-container">
+					<div class="controls-title">Configs</div>
+			
+					  <label for="rowsSlider">Rows: <span id="rowsValue">4</span></label>
+					  <input type="range" id="rowsSlider" min="2" max="30" value="4">
+			
+					  <label for="colsSlider">Cols: <span id="colsValue">4</span></label>
+					  <input type="range" id="colsSlider" min="2" max="30" value="4">
+		
+					  <label for="tailsSizeSlider" class="mt-5">Tails Size: <span id="tailsSizeValue">5</span></label>
+					  <input type="range" id="tailsSizeSlider" min="1" max="10" value="5">
+			
+				</div>
+			</div>
+		</div>
+		<div class="main-content">
+			<div id="boards-container"></div>
 		</div>
 	</div>
-	<div id="boards-container"></div>
 
 	<script src="index.js"></script>
 </body>

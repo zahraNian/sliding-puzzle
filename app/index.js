@@ -109,7 +109,7 @@ class SlidingPuzzle {
 
   // Get adjacent tiles to a given cell
   getAdjacentCells(cell) {
-    const [_, __, rowStr, colStr] = cell.id.split('-');
+    const [, , rowStr, colStr] = cell.id.split('-');
     const row = parseInt(rowStr);
     const col = parseInt(colStr);
     const adjacent = [];
@@ -223,6 +223,7 @@ class SlidingPuzzle {
     controls.classList.add("align-center");
 
     const scrambleBtn = document.createElement('button');
+    scrambleBtn.classList = "primary-btn";
     scrambleBtn.id = `scramble-${this.puzzle.id}`;
     scrambleBtn.innerText = 'Scramble';
     scrambleBtn.addEventListener('click', () => this.scramble());
