@@ -1,18 +1,20 @@
-const tailSizeConfig = { 1: 35, 2: 40, 3: 50, 4: 65, 5: 80, 6: 90, 7: 95, 8: 100, 9: 105, 10: 115 };
+const tailSizeConfig = { 1: 35, 2: 40, 3: 50, 4: 65, 5: 80, 6: 90, 7: 95, 8: 100, 9: 105, 10: 115 }; // Tile size options
 
 class SlidingPuzzle {
   constructor(containerId, boardId, rows = 4, cols = 4, tileSize = tailSizeConfig[5]) {
-    this.state = 1;
+    this.state = 1; // Puzzle state: 1 = active, 0 = scrambling
     this.rows = rows;
     this.cols = cols;
     this.tileSize = tailSizeConfig[tileSize];
 
     this.container = document.getElementById(containerId);
 
+    // Create internal puzzle container
     this.puzzleContainer = document.createElement('div');
     this.puzzleContainer.classList.add('puzzle-container');
     this.puzzleContainer.id = 'puzzle-container-' + boardId;
 
+    // Create the puzzle board element
     this.puzzle = document.createElement('div');
     this.puzzle.id = 'board' + boardId;
     Object.assign(this.puzzle.style, {
@@ -27,13 +29,16 @@ class SlidingPuzzle {
     this.container.appendChild(this.puzzleContainer);
     this.puzzleContainer.appendChild(this.puzzle);
 
-    this.previousCell = null;
-    this.difficultyLevel = this.difficultyLevels(this.rows, this.cols);
+    this.previousCell = null; // Used to avoid reversing moves during scramble
+    this.difficultyLevel = this.difficultyLevels(this.rows, this.cols); // Set scramble moves
 
     this.createControls();
+    // We first build a solved puzzle and then scramble
+    // Ensures the puzzle is always solvable because every move is reversible
     this.solve();
     this.scramble(100, true);
 
+    // Handle clicks on puzzle tiles
     this.puzzle.addEventListener('click', (e) => {
       if (this.state === 1) {
         this.puzzle.className = 'animate';
@@ -57,16 +62,17 @@ class SlidingPuzzle {
           cell.innerHTML = n.toString();
           n++;
         } else {
-          cell.className = 'empty';
+          cell.className = 'empty'; // Last cell is empty
         }
 
         this.puzzle.appendChild(cell);
       }
     }
 
-    this.applyTileSize();
+    this.applyTileSize(); // Set sizes and positions
   }
 
+  // Apply sizes and positions to all tiles
   applyTileSize() {
     this.puzzle.style.width = `${this.tileSize * this.cols + 10}px`;
     this.puzzle.style.height = `${this.tileSize * this.rows + 10}px`;
@@ -85,19 +91,23 @@ class SlidingPuzzle {
     }
   }
 
+  // Update tile size dynamically
   updateTileSize(newSize) {
     this.tileSize = tailSizeConfig[newSize];
     this.applyTileSize();
   }
 
+  // Get specific cell element
   getCell(row, col) {
     return document.getElementById(`cell-${this.puzzle.id}-${row}-${col}`);
   }
 
+  // Get the empty tile
   getEmptyCell() {
     return this.puzzle.querySelector('.empty');
   }
 
+  // Get adjacent tiles to a given cell
   getAdjacentCells(cell) {
     const [_, __, rowStr, colStr] = cell.id.split('-');
     const row = parseInt(rowStr);
@@ -112,6 +122,7 @@ class SlidingPuzzle {
     return adjacent;
   }
 
+  // Find empty tile among adjacent tiles
   getEmptyAdjacentCell(cell) {
     const adjacent = this.getAdjacentCells(cell);
     for (let adj of adjacent) {
@@ -120,22 +131,25 @@ class SlidingPuzzle {
     return false;
   }
 
+  // Swap a tile with the empty tile
   shiftCell(cell) {
     if (cell.className === 'empty') return;
     const emptyCell = this.getEmptyAdjacentCell(cell);
     if (!emptyCell) return;
 
+    // Swap styles and ids
     const tmp = { style: cell.style.cssText, id: cell.id };
     cell.style.cssText = emptyCell.style.cssText;
     cell.id = emptyCell.id;
     emptyCell.style.cssText = tmp.style;
     emptyCell.id = tmp.id;
-
+    // Check if solved
     if (this.state === 1) {
       setTimeout(() => this.checkOrder(), 150);
     }
   }
 
+  // Check if puzzle is solved
   checkOrder() {
     const lastCell = this.getCell(this.rows - 1, this.cols - 1);
     if (lastCell.className !== 'empty') return;
@@ -156,6 +170,7 @@ class SlidingPuzzle {
     }
   }
 
+  // Shuffle the puzzle
   scramble(moves = this.difficultyLevel, instant = false) {
     if (this.state === 0) return;
     this.state = 0;
@@ -163,6 +178,8 @@ class SlidingPuzzle {
     const randomMove = () => {
       const adj = this.getAdjacentCells(this.getEmptyCell());
 
+      // Avoiding the last move prevents immediately undoing it,
+      // ensuring the scramble actually changes the board and makes the puzzle properly shuffled
       if (this.previousCell) {
         for (let j = adj.length - 1; j >= 0; j--) {
           if (adj[j].innerHTML === this.previousCell.innerHTML) {
@@ -175,12 +192,12 @@ class SlidingPuzzle {
       this.shiftCell(this.previousCell);
     };
 
-    if (instant) {
+    if (instant) { // Instant shuffle without animte, for first time
       for (let i = 0; i < moves; i++) {
         randomMove();
       }
       this.state = 1;
-    } else {
+    } else { // Animate shuffle
       this.puzzle.removeAttribute('class');
       let i = 0;
       const interval = setInterval(() => {
@@ -195,10 +212,12 @@ class SlidingPuzzle {
     }
   }
 
+  // Random integer helper
   rand(from, to) {
     return Math.floor(Math.random() * (to - from + 1)) + from;
   }
 
+  // Create scramble button
   createControls() {
     const controls = document.createElement('div');
     controls.classList.add("align-center");
@@ -212,6 +231,7 @@ class SlidingPuzzle {
     document.getElementById(this.puzzleContainer.id).appendChild(controls);
   }
 
+  // Determine number of moves for scrambling based on puzzle size
   difficultyLevels(row, col) {
     const items = row * col;
     if (items <= 16) return 100;
@@ -221,11 +241,13 @@ class SlidingPuzzle {
   }
 }
 
+// Global puzzle management
 let existingBoardsNumber = 1;
 let currentPuzzle = null;
 
 const createPuzzle = (rows, cols) => {
   const container = document.getElementById('boards-container');
+  // Clear previous board
   container.innerHTML = '';
 
   currentPuzzle = new SlidingPuzzle(
@@ -238,7 +260,7 @@ const createPuzzle = (rows, cols) => {
   existingBoardsNumber++;
 };
 
-// Sliders
+// Slider bindings
 const rowsSlider = document.getElementById('rowsSlider');
 const colsSlider = document.getElementById('colsSlider');
 const tailsSizeSlider = document.getElementById('tailsSizeSlider');
@@ -246,6 +268,7 @@ const rowsValue = document.getElementById('rowsValue');
 const colsValue = document.getElementById('colsValue');
 const tailsSizeValue = document.getElementById('tailsSizeValue');
 
+// Generic slider helper
 function bindSlider(slider, valueEl, callback) {
   slider.addEventListener('input', () => {
     valueEl.innerText = slider.value;
@@ -258,9 +281,10 @@ bindSlider(tailsSizeSlider, tailsSizeValue, () => {
   if (currentPuzzle) currentPuzzle.updateTileSize(+tailsSizeSlider.value);
 });
 
-// Add initial puzzle
+// Initialize first puzzle
 createPuzzle(parseInt(rowsSlider.value), parseInt(colsSlider.value));
 
+// Add additional board button
 document.getElementById('add-board').addEventListener('click', () => {
   new SlidingPuzzle(
     'boards-container',
