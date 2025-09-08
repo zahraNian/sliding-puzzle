@@ -244,20 +244,21 @@ class SlidingPuzzle {
 
 // Global puzzle management
 let existingBoardsNumber = 1;
-let currentPuzzle = null;
+let puzzles = [];
 
 const createPuzzle = (rows, cols) => {
   const container = document.getElementById('boards-container');
   // Clear previous board
   container.innerHTML = '';
 
-  currentPuzzle = new SlidingPuzzle(
+  const puzzle = new SlidingPuzzle(
     'boards-container',
     existingBoardsNumber,
     rows,
     cols,
     parseInt(tailsSizeSlider.value)
   );
+  puzzles.push(puzzle);
   existingBoardsNumber++;
 };
 
@@ -279,7 +280,7 @@ function bindSlider(slider, valueEl, callback) {
 bindSlider(rowsSlider, rowsValue, () => createPuzzle(+rowsSlider.value, +colsSlider.value));
 bindSlider(colsSlider, colsValue, () => createPuzzle(+rowsSlider.value, +colsSlider.value));
 bindSlider(tailsSizeSlider, tailsSizeValue, () => {
-  if (currentPuzzle) currentPuzzle.updateTileSize(+tailsSizeSlider.value);
+  puzzles.forEach(p => p.updateTileSize(+tailsSizeSlider.value));
 });
 
 // Initialize first puzzle
@@ -287,7 +288,7 @@ createPuzzle(parseInt(rowsSlider.value), parseInt(colsSlider.value));
 
 // Add additional board button
 document.getElementById('add-board').addEventListener('click', () => {
-  new SlidingPuzzle(
+  const newPuzzle = new SlidingPuzzle(
     'boards-container',
     existingBoardsNumber,
     parseInt(rowsSlider.value),
@@ -295,4 +296,5 @@ document.getElementById('add-board').addEventListener('click', () => {
     parseInt(tailsSizeSlider.value)
   );
   existingBoardsNumber++;
+  puzzles.push(newPuzzle);
 });
