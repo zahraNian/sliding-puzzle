@@ -1,11 +1,9 @@
-const tailSizeConfig = { 1: 35, 2: 40, 3: 50, 4: 65, 5: 80, 6: 90, 7: 95, 8: 100, 9: 105, 10: 115 }; // Tile size options
-
 class SlidingPuzzle {
-  constructor(containerId, boardId, rows = 4, cols = 4, tileSize = tailSizeConfig[5]) {
+  constructor(containerId, boardId, rows = 4, cols = 4, tileSize = TAIL_SIZE_CONFIG[5]) {
     this.state = 1; // Puzzle state: 1 = active, 0 = scrambling
     this.rows = rows;
     this.cols = cols;
-    this.tileSize = tailSizeConfig[tileSize];
+    this.tileSize = TAIL_SIZE_CONFIG[tileSize];
 
     this.container = document.getElementById(containerId);
 
@@ -93,7 +91,7 @@ class SlidingPuzzle {
 
   // Update tile size dynamically
   updateTileSize(newSize) {
-    this.tileSize = tailSizeConfig[newSize];
+    this.tileSize = TAIL_SIZE_CONFIG[newSize];
     this.applyTileSize();
   }
 
