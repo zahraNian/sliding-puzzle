@@ -1,4 +1,4 @@
-import { createPuzzle } from './boardManager.js';
+import { createPuzzle } from './puzzlesManager.js';
 import { DEFAULT_TAIL_SIZE, DEFAULT_ROWS_NUMBER, DEFAULT_COLS_NUMBER } from './config.js';
 
 // Initialize

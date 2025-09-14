@@ -22,7 +22,7 @@ export class SlidingPuzzle {
         Object.assign(this.puzzle.style, {
             position: "relative",
             overflow: "auto",
-            maxWidth: "90vw",
+            maxWidth: "95vw",
             minHeight: "max-content",
             display: "flex",
             alignItems: "center",
@@ -78,8 +78,8 @@ export class SlidingPuzzle {
 
     // Apply sizes and positions to all tiles
     applyTileSize() {
-        this.puzzle.style.width = `${this.tileSize * this.cols + 10}px`;
-        this.puzzle.style.height = `${this.tileSize * this.rows + 10}px`;
+        this.puzzle.style.width = `${this.tileSize * this.cols + this.cols }px`;
+        this.puzzle.style.height = `${this.tileSize * this.rows + this.rows }px`;
 
         for (let i = 0; i < this.rows; i++) {
             for (let j = 0; j < this.cols; j++) {
