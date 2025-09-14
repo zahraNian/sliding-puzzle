@@ -223,6 +223,16 @@ button {
   transition: 0.15s left, 0.15s top;
 }
 
+.puzzle-board {
+  position: relative;
+  overflow: auto;
+  max-width: 95vw;
+  min-height: max-content;
+  display: flex;
+  align-items: center;
+  justify-content: center
+}
+
 /* -------------------- Modal -------------------- */
 .modal {
   position: fixed;

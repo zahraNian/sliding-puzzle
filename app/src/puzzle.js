@@ -19,15 +19,7 @@ export class SlidingPuzzle {
         // Create the puzzle board element
         this.puzzle = document.createElement('div');
         this.puzzle.id = 'board' + boardId;
-        Object.assign(this.puzzle.style, {
-            position: "relative",
-            overflow: "auto",
-            maxWidth: "95vw",
-            minHeight: "max-content",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-        });
+        this.puzzle.classList.add("puzzle-board")
         this.container.appendChild(this.puzzleContainer);
         this.puzzleContainer.appendChild(this.puzzle);
 
