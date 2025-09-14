@@ -78,8 +78,8 @@ export class SlidingPuzzle {
 
     // Apply sizes and positions to all tiles
     applyTileSize() {
-        this.puzzle.style.width = `${this.tileSize * this.cols + this.cols }px`;
-        this.puzzle.style.height = `${this.tileSize * this.rows + this.rows }px`;
+        this.puzzle.style.width = `${this.tileSize * this.cols + this.cols}px`;
+        this.puzzle.style.height = `${this.tileSize * this.rows + this.rows}px`;
 
         for (let i = 0; i < this.rows; i++) {
             for (let j = 0; j < this.cols; j++) {
@@ -224,6 +224,7 @@ export class SlidingPuzzle {
         if (items <= 124) return 900;
         return 1200;
     }
+    // Create configuration modal for rows, cols, and tile size
     createConfigModal() {
         this.configModal = new Modal("Configs");
 
@@ -272,9 +273,9 @@ export class SlidingPuzzle {
         confirmBtn.addEventListener("click", () => {
             this.rows = tempState.rows;
             this.cols = tempState.cols;
-            this.updateTileSize(tempState.tileSize);
-            this.solve();
-            this.scramble(100, true);
+            this.updateTileSize(tempState.tileSize); // Update size
+            this.solve(); // Rebuild puzzle
+            this.scramble(100, true); // Shuffle immediately
             this.configModal.close();
         });
 
@@ -290,6 +291,7 @@ export class SlidingPuzzle {
         this.configModal.setContent(configContent);
     }
 
+    // Create control buttons (Scramble, Configs) below the puzzle
     createControls() {
         const controls = document.createElement("div");
         controls.classList.add("align-center");
