@@ -48,21 +48,45 @@ p a {
   justify-content: center;
 }
 
-.mt-5 { margin-top: 20px; }
-.mt-10 { margin-top: 40px; }
-.mb-3 { margin-bottom: 12px; }
+.mt-5 {
+  margin-top: 20px;
+}
+
+.mt-10 {
+  margin-top: 40px;
+}
+
+.mb-3 {
+  margin-bottom: 12px;
+}
 
 /* -------------------- Buttons -------------------- */
-.primary-btn {
+button {
   cursor: pointer;
   outline: none;
-  padding: 10px 20px;
   border: 0;
   border-radius: 6px;
-  background: var(--primary);
   text-align: center;
+}
+
+.primary-btn {
+  padding: 10px 20px;
+  background: var(--primary);
+  border: 1px solid var(--primary);
   color: #dbdbdb;
   transition: background 0.3s;
+}
+
+.text-primary-btn {
+  padding: 10px 20px;
+  background: white;
+  color: var(--secondary);
+  border: 1px solid white;
+  transition: background 0.3s;
+}
+
+.text-primary-btn:hover {
+  background: var(--gray-50);
 }
 
 .primary-btn.lg-btn {
@@ -109,42 +133,6 @@ p a {
   top: 0;
   z-index: 10;
   background-color: inherit;
-}
-
-/* -------------------- Page Layout -------------------- */
-.page-content {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-}
-
-@media (min-width: 769px) {
-  .sidebar {
-    padding: 0 40px;
-    border-right: 2px solid var(--border);
-    min-height: calc(100vh - 92px);
-    position: sticky;
-    top: 92px;
-  }
-}
-
-.main-content {
-  flex: 1;
-  padding: 20px;
-}
-
-/* Mobile */
-@media (max-width: 768px) {
-  .page-content {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .sidebar {
-    border-right: none;
-    border-bottom: 2px solid var(--border);
-    padding: 0 10px 20px;
-  }
 }
 
 /* -------------------- Sliders / Controls -------------------- */
@@ -222,9 +210,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 #boards-container span {
   position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 80px;
   height: 80px;
   border-radius: 6px;
@@ -247,4 +232,34 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 #boards-container.animate span {
   transition: 0.15s left, 0.15s top;
+}
+
+/* -------------------- Modal -------------------- */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  background: var(--secondary);
+  border-radius: 8px;
+  padding: 16px;
+  z-index: 1000;
+  min-width: 350px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  border: 1px solid var(--gray-100);
+  color: var(--gray-50);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: none;
+  z-index: 999
 }

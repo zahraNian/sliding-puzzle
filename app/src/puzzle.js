@@ -1,5 +1,6 @@
 import { TAIL_SIZE_CONFIG } from './config.js';
 import { rand } from './utils.js';
+import { Modal } from './modal.js';
 
 export class SlidingPuzzle {
     constructor(containerId, boardId, rows = 4, cols = 4, tileSize = TAIL_SIZE_CONFIG[5]) {
@@ -32,7 +33,9 @@ export class SlidingPuzzle {
 
         this.previousCell = null; // Used to avoid reversing moves during scramble
         this.difficultyLevel = this.difficultyLevels(this.rows, this.cols); // Set scramble moves
+        this.difficultyLevel = this.difficultyLevels(this.rows, this.cols);
 
+        this.createConfigModal();
         this.createControls();
         // We first build a solved puzzle and then scramble
         // Ensures the puzzle is always solvable because every move is reversible
@@ -213,21 +216,6 @@ export class SlidingPuzzle {
         }
     }
 
-    // Create scramble button
-    createControls() {
-        const controls = document.createElement('div');
-        controls.classList.add("align-center");
-
-        const scrambleBtn = document.createElement('button');
-        scrambleBtn.classList = "primary-btn";
-        scrambleBtn.id = `scramble-${this.puzzle.id}`;
-        scrambleBtn.innerText = 'Scramble';
-        scrambleBtn.addEventListener('click', () => this.scramble());
-
-        controls.appendChild(scrambleBtn);
-        document.getElementById(this.puzzleContainer.id).appendChild(controls);
-    }
-
     // Determine number of moves for scrambling based on puzzle size
     difficultyLevels(row, col) {
         const items = row * col;
@@ -236,4 +224,90 @@ export class SlidingPuzzle {
         if (items <= 124) return 900;
         return 1200;
     }
+    createConfigModal() {
+        this.configModal = new Modal("Configs");
+
+        const tempState = {
+            rows: this.rows,
+            cols: this.cols,
+            tileSize: Object.keys(TAIL_SIZE_CONFIG).find(key => TAIL_SIZE_CONFIG[key] === this.tileSize)
+        };
+
+        const configContent = document.createElement("div");
+
+        const createSlider = ({ labelText, min, max, valueKey }) => {
+            const label = document.createElement("label");
+            const spanId = `${valueKey}-${this.puzzle.id}`;
+            label.innerHTML = `${labelText}: <span id="${spanId}">${tempState[valueKey]}</span>`;
+            label.style.display = "block";
+            label.style.marginTop = "15px";
+            label.style.marginBottom = "8px";
+
+            const slider = document.createElement("input");
+            slider.type = "range";
+            slider.min = min;
+            slider.max = max;
+            slider.value = tempState[valueKey];
+            slider.addEventListener("input", (e) => {
+                tempState[valueKey] = parseInt(e.target.value);
+                document.getElementById(spanId).innerText = e.target.value;
+            });
+
+            configContent.appendChild(label);
+            configContent.appendChild(slider);
+        };
+
+        createSlider({ labelText: "Rows", min: 2, max: 30, valueKey: "rows" });
+        createSlider({ labelText: "Cols", min: 2, max: 30, valueKey: "cols" });
+        createSlider({ labelText: "Tile Size", min: 1, max: 10, valueKey: "tileSize" });
+
+        const btnContainer = document.createElement("div");
+        btnContainer.style.marginTop = "20px";
+        btnContainer.style.textAlign = "right";
+
+        const confirmBtn = document.createElement("button");
+        confirmBtn.innerText = "Confirm";
+        confirmBtn.classList.add("primary-btn");
+        confirmBtn.style.marginRight = "8px";
+        confirmBtn.addEventListener("click", () => {
+            this.rows = tempState.rows;
+            this.cols = tempState.cols;
+            this.updateTileSize(tempState.tileSize);
+            this.solve();
+            this.scramble(100, true);
+            this.configModal.close();
+        });
+
+        const cancelBtn = document.createElement("button");
+        cancelBtn.innerText = "Cancel";
+        cancelBtn.classList.add("text-primary-btn");
+        cancelBtn.addEventListener("click", () => this.configModal.close());
+
+        btnContainer.appendChild(confirmBtn);
+        btnContainer.appendChild(cancelBtn);
+        configContent.appendChild(btnContainer);
+
+        this.configModal.setContent(configContent);
+    }
+
+    createControls() {
+        const controls = document.createElement("div");
+        controls.classList.add("align-center");
+
+        const scrambleBtn = document.createElement('button');
+        scrambleBtn.classList = "primary-btn";
+        scrambleBtn.innerText = 'Scramble';
+        scrambleBtn.addEventListener('click', () => this.scramble());
+        controls.appendChild(scrambleBtn);
+
+        const configBtn = document.createElement('button');
+        configBtn.classList = "primary-btn";
+        configBtn.innerText = 'Configs';
+        configBtn.style.marginLeft = "8px";
+        configBtn.addEventListener('click', () => this.configModal.open());
+        controls.appendChild(configBtn);
+
+        this.puzzleContainer.appendChild(controls);
+    }
+
 }
