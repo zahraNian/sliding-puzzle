@@ -1,16 +1,9 @@
-import { createPuzzle, replaceAllPuzzlesWithNewOne, initSliders } from './boardManager.js';
-
-const rowsSlider = document.getElementById('rowsSlider');
-const colsSlider = document.getElementById('colsSlider');
-const tailsSizeSlider = document.getElementById('tailsSizeSlider');
-const rowsValue = document.getElementById('rowsValue');
-const colsValue = document.getElementById('colsValue');
-const tailsSizeValue = document.getElementById('tailsSizeValue');
+import { createPuzzle } from './boardManager.js';
+import { DEFAULT_TAIL_SIZE, DEFAULT_ROWS_NUMBER, DEFAULT_COLS_NUMBER } from './config.js';
 
 // Initialize
-replaceAllPuzzlesWithNewOne(parseInt(rowsSlider.value), parseInt(colsSlider.value), parseInt(tailsSizeSlider.value));
-initSliders(rowsSlider, colsSlider, tailsSizeSlider, rowsValue, colsValue, tailsSizeValue);
+createPuzzle('boards-container', DEFAULT_ROWS_NUMBER, DEFAULT_COLS_NUMBER, DEFAULT_TAIL_SIZE);
 
 document.getElementById('add-board').addEventListener('click', () => {
-    createPuzzle(+rowsSlider.value, +colsSlider.value, +tailsSizeSlider.value);
+    createPuzzle('boards-container', DEFAULT_ROWS_NUMBER, DEFAULT_COLS_NUMBER, DEFAULT_TAIL_SIZE);
 });

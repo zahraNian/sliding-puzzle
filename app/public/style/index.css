@@ -148,18 +148,6 @@ button {
   color: var(--text-primary);
 }
 
-.controls-title {
-  font-size: 18px;
-  font-weight: 600;
-  border-bottom: 1px solid var(--text-primary);
-  padding-bottom: 4px;
-  margin-bottom: 10px;
-}
-
-.slider-container label {
-  font-size: 14px;
-}
-
 input[type="range"] {
   -webkit-appearance: none;
   width: 100%;
